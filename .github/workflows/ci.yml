@@ -1,0 +1,27 @@
+name: CI # как назвать - выбираете сами
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  build:
+    permissions:
+      contents: read
+      packages: write
+    env:
+      GHCR_REGISTRY: ghcr.io
+      IMAGE: ${{ github.repository }}
+
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3 # вытаскиваем из нашего репо исходники
+      - uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+          registry: ${{ env.GHCR_REGISTRY }}
+          repository: ${{ env.IMAGE }}
+          tag_with_ref: true

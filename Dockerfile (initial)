@@ -1,0 +1,19 @@
+# https://docs.docker.com/engine/reference/builder/
+# https://docs.docker.com/engine/reference/builder/#from
+# https://hub.docker.com/_/node
+FROM node:16-bullseye-slim
+# https://docs.docker.com/engine/reference/builder/#workdir
+WORKDIR /app
+# https://docs.docker.com/engine/reference/builder/#copy
+# COPY multiple(local) dst(image)
+COPY package.json package-lock.json ./
+RUN npm ci
+# https://docs.docker.com/engine/reference/builder/#copy
+# COPY src(local) dst(image)
+COPY . .
+RUN npm run build
+
+# TODO: docker image build . -t frontend-builder:v1
+# TODO: docker image ls
+# TODO: docker run -it frontend-builder:v1 bash
+# TODO: docker run -it -v ${PWD}/artifacts:/app/artifacts frontend-builder:v1 cp -R /app/build /app/artifacts
