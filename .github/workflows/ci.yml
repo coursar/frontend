@@ -8,20 +8,13 @@ on:
 
 jobs:
   build:
-    permissions:
-      contents: read
-      packages: write
-    env:
-      GHCR_REGISTRY: ghcr.io
-      IMAGE: ${{ github.repository }}
-
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3 # вытаскиваем из нашего репо исходники
-      - uses: docker/build-push-action@v1
+      - uses: actions/checkout@v3
+      # move to another branch or repository
+      - run: docker build . -t builder
+      - run: docker run -v "$(pwd):/app" builder build
+      - uses: actions/upload-artifact@v3
         with:
-          username: ${{ github.actor }}
-          password: ${{ github.token }}
-          registry: ${{ env.GHCR_REGISTRY }}
-          repository: ${{ env.IMAGE }}
-          tag_with_ref: true
+          name: frontend
+          path: build
